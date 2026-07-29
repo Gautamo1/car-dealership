@@ -109,3 +109,19 @@ class VehicleService:
             db=db,
             vehicle=vehicle,
         )
+    @staticmethod
+    def restock(
+        db: Session,
+        vehicle_id: int,
+        quantity: int,
+    ):
+        vehicle = VehicleService._get_vehicle_or_404(
+            db=db,
+            vehicle_id=vehicle_id,
+        )
+    
+        return VehicleRepository.restock(
+            db=db,
+            vehicle=vehicle,
+            quantity=quantity,
+        )

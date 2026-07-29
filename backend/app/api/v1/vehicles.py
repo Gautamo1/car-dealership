@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.dependencies.auth import get_current_user
 from app.models.user import User
-from app.schemas.vehicle import VehicleCreate, VehicleResponse, VehicleUpdate, VehicleFilter
+from app.schemas.vehicle import VehicleCreate, VehicleResponse, VehicleUpdate, VehicleFilter, RestockRequest
 from app.services.vehicle_service import VehicleService
+
 
 router = APIRouter(prefix="/vehicles", tags=["Vehicles"])
 
@@ -97,4 +98,21 @@ def purchase_vehicle(
     return VehicleService.purchase(
         db=db,
         vehicle_id=vehicle_id,
+    )
+
+
+@router.post(
+    "/{vehicle_id}/restock",
+    response_model=VehicleResponse,
+)
+def restock_vehicle(
+    vehicle_id: int,
+    request: RestockRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return VehicleService.restock(
+        db=db,
+        vehicle_id=vehicle_id,
+        quantity=request.quantity,
     )

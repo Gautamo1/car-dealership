@@ -96,3 +96,16 @@ class VehicleRepository:
         db.refresh(vehicle)
 
         return vehicle
+
+    @staticmethod
+    def restock(
+        db: Session,
+        vehicle: Vehicle,
+        quantity: int,
+    ) -> Vehicle:
+        vehicle.stock += quantity
+    
+        db.commit()
+        db.refresh(vehicle)
+    
+        return vehicle
