@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import status
+from app.schemas.auth import LoginRequest
 
 from sqlalchemy.orm import Session
 
@@ -32,3 +33,14 @@ def register(
         "username": user.username,
         "email": user.email,
     }
+
+@router.post("/login")
+def login(
+    request: LoginRequest,
+    db: Session = Depends(get_db),
+):
+    return AuthService.login(
+        db=db,
+        email=request.email,
+        password=request.password,
+    )
