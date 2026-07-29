@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status, HTTPException
+from app.core.security import hash_password
 
 from sqlalchemy.orm import Session
 
@@ -32,7 +33,7 @@ def register(
     user = User(
         username=request.username,
         email=request.email,
-        password=request.password,
+        password=hash_password(request.password),
     )
 
     db.add(user)

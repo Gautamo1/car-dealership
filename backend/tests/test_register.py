@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 from app.main import app
 from fastapi import status
-from app.db.database import SessionLocal
+from app.db.test_database import TestingSessionLocal
 from app.models.user import User
 
 
@@ -58,7 +58,7 @@ def test_password_is_hashed(client):
 
     assert response.status_code == 201
 
-    db: Session = SessionLocal()
+    db: Session = TestingSessionLocal()
 
     user = db.query(User).filter(User.email == payload["email"]).first()
 
