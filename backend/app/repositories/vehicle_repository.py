@@ -36,7 +36,7 @@ class VehicleRepository:
                 Vehicle.price >= filters.min_price
             )
 
-        if filters.max_price:
+        if filters.max_price is not None:
             query = query.filter(
                 Vehicle.price <= filters.max_price
             )
