@@ -137,3 +137,23 @@ def test_update_vehicle(client, auth_headers):
     assert body["year"] == 2025
     assert Decimal(body["price"]) == Decimal("40000.00")
     assert body["stock"] == 10
+
+
+def test_update_nonexistent_vehicle(client, auth_headers):
+
+    response = client.put(
+        "/api/v1/vehicles/999",
+        headers=auth_headers,
+        json={
+            "make": "Honda",
+            "model": "City",
+            "year": 2025,
+            "price": 40000,
+            "stock": 10,
+        },
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.json() == {
+        "detail": "Vehicle not found"
+    }
