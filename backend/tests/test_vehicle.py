@@ -484,3 +484,42 @@ def test_customer_cannot_restock_vehicle(
     assert response.json() == {
         "detail": "Admin access required"
     }
+
+def test_search_vehicles_by_model(client, admin_headers, auth_headers):
+    client.post(
+        "/api/v1/vehicles",
+        headers=admin_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "category": "Sedan",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    client.post(
+        "/api/v1/vehicles",
+        headers=admin_headers,
+        json={
+            "make": "Honda",
+            "model": "City",
+            "category": "Sedan",
+            "year": 2024,
+            "price": 30000,
+            "stock": 5,
+        },
+    )
+
+    response = client.get(
+        "/api/v1/vehicles/search?model=Camry",
+        headers=auth_headers,
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    vehicles = response.json()
+
+    assert len(vehicles) == 1
+    assert vehicles[0]["model"] == "Camry"
