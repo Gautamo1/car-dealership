@@ -1,27 +1,35 @@
 from datetime import datetime, timedelta, timezone
-import os
-from dotenv import load_dotenv
-from jose import jwt
 
-load_dotenv()
+from jose import JWTError, jwt
 
+from app.core.config import settings
 
-SECRET_KEY = os.getenv('SECRET_KEY')
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ALGORITHM = settings.ALGORITHM
 
 
 def create_access_token(data: dict) -> str:
-    to_encode = data.copy()
+    payload = data.copy()
 
     expire = datetime.now(timezone.utc) + timedelta(
-        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
 
-    to_encode.update({"exp": expire})
+    payload.update({"exp": expire})
 
     return jwt.encode(
-        to_encode,
-        SECRET_KEY,
+        payload,
+        settings.SECRET_KEY,
         algorithm=ALGORITHM,
     )
+
+
+def decode_access_token(token: str):
+    try:
+        return jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[ALGORITHM],
+        )
+
+    except JWTError:
+        return None
