@@ -422,3 +422,33 @@ def test_customer_cannot_update_vehicle(
     assert response.json() == {
         "detail": "Admin access required"
     }
+
+
+def test_customer_cannot_delete_vehicle(
+    client,
+    admin_headers,
+    auth_headers,
+):
+    create_response = client.post(
+        "/api/v1/vehicles",
+        headers=admin_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    vehicle = create_response.json()
+
+    response = client.delete(
+        f"/api/v1/vehicles/{vehicle['id']}",
+        headers=auth_headers,
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.json() == {
+        "detail": "Admin access required"
+    }

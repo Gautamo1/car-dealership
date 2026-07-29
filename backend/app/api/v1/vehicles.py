@@ -116,3 +116,4 @@ def restock_vehicle(
         vehicle_id=vehicle_id,
         quantity=request.quantity,
     )
+
