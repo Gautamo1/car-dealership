@@ -67,3 +67,22 @@ def test_password_is_hashed(client):
     assert user is not None
 
     assert user.password != payload["password"]
+
+
+def test_register_admin_user(client):
+
+    response = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "admin@example.com",
+            "password": "password123",
+            "role": "admin",
+        },
+    )
+
+    assert response.status_code == status.HTTP_201_CREATED
+
+    user = response.json()
+
+    assert user["email"] == "admin@example.com"
+    assert user["role"] == "admin"
