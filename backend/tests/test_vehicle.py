@@ -157,3 +157,34 @@ def test_update_nonexistent_vehicle(client, auth_headers):
     assert response.json() == {
         "detail": "Vehicle not found"
     }
+
+
+def test_delete_vehicle(client, auth_headers):
+
+    create_response = client.post(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    vehicle = create_response.json()
+
+    response = client.delete(
+        f"/api/v1/vehicles/{vehicle['id']}",
+        headers=auth_headers,
+    )
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    response = client.get(
+        f"/api/v1/vehicles/{vehicle['id']}",
+        headers=auth_headers,
+    )
+
+    assert response.status_code == status.HTTP_404_NOT_FOUND
