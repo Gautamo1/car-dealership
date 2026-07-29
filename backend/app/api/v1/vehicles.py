@@ -109,7 +109,7 @@ def restock_vehicle(
     vehicle_id: int,
     request: RestockRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_admin),
 ):
     return VehicleService.restock(
         db=db,
