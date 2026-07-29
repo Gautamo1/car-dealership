@@ -13,6 +13,7 @@ class VehicleService:
             db,
             make=request.make,
             model=request.model,
+            category=request.category,
             year=request.year,
             price=request.price,
             stock=request.stock,

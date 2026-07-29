@@ -71,6 +71,7 @@ class VehicleRepository:
     ) -> Vehicle:
         vehicle.make = request.make
         vehicle.model = request.model
+        vehicle.category = request.category
         vehicle.year = request.year
         vehicle.price = request.price
         vehicle.stock = request.stock

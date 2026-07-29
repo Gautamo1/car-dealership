@@ -11,6 +11,7 @@ def test_create_vehicle(client, admin_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -23,6 +24,7 @@ def test_create_vehicle(client, admin_headers):
 
     assert body["make"] == "Toyota"
     assert body["model"] == "Camry"
+    assert body["category"] == "Sedan"
     assert body["year"] == 2024
     assert body["price"] == "35000.00"
     assert body["stock"] == 5
@@ -36,6 +38,7 @@ def test_get_all_vehicles(client, admin_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -59,6 +62,7 @@ def test_get_all_vehicles(client, admin_headers):
 
     assert vehicle["make"] == "Toyota"
     assert vehicle["model"] == "Camry"
+    assert vehicle["category"] == "Sedan"
     assert vehicle["year"] == 2024
     assert Decimal(vehicle["price"]) == Decimal("35000.00")
     assert vehicle["stock"] == 5
@@ -72,6 +76,7 @@ def test_get_vehicle_by_id(client, admin_headers, auth_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -94,6 +99,7 @@ def test_get_vehicle_by_id(client, admin_headers, auth_headers):
     assert vehicle["id"] == vehicle_id
     assert vehicle["make"] == "Toyota"
     assert vehicle["model"] == "Camry"
+    assert vehicle["category"] == "Sedan"
     assert vehicle["year"] == 2024
     assert Decimal(vehicle["price"]) == Decimal("35000.00")
     assert vehicle["stock"] == 5
@@ -107,6 +113,7 @@ def test_update_vehicle(client, admin_headers, auth_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -121,6 +128,7 @@ def test_update_vehicle(client, admin_headers, auth_headers):
         json={
             "make": "Honda",
             "model": "City",
+            "category": "Sedan",
             "year": 2025,
             "price": 40000,
             "stock": 10,
@@ -134,6 +142,7 @@ def test_update_vehicle(client, admin_headers, auth_headers):
     assert body["id"] == vehicle["id"]
     assert body["make"] == "Honda"
     assert body["model"] == "City"
+    assert body["category"] == "Sedan"
     assert body["year"] == 2025
     assert Decimal(body["price"]) == Decimal("40000.00")
     assert body["stock"] == 10
@@ -147,6 +156,7 @@ def test_update_nonexistent_vehicle(client, admin_headers):
         json={
             "make": "Honda",
             "model": "City",
+            "category": "Sedan",
             "year": 2025,
             "price": 40000,
             "stock": 10,
@@ -167,6 +177,7 @@ def test_delete_vehicle(client, admin_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -197,6 +208,7 @@ def test_filter_vehicles_by_make(client, admin_headers, auth_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -209,6 +221,7 @@ def test_filter_vehicles_by_make(client, admin_headers, auth_headers):
         json={
             "make": "Honda",
             "model": "City",
+            "category": "Sedan",
             "year": 2024,
             "price": 30000,
             "stock": 4,
@@ -236,6 +249,7 @@ def test_purchase_vehicle(client, admin_headers, auth_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -263,6 +277,7 @@ def test_purchase_out_of_stock_vehicle(client, admin_headers, auth_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 0,
@@ -289,6 +304,7 @@ def test_restock_vehicle(client, admin_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -319,6 +335,7 @@ def test_restock_vehicle_invalid_quantity(client, admin_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -346,6 +363,7 @@ def test_restock_vehicle_negative_quantity(client, admin_headers):
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -376,6 +394,7 @@ def test_customer_cannot_create_vehicle(
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -398,6 +417,7 @@ def test_customer_cannot_update_vehicle(
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -412,6 +432,7 @@ def test_customer_cannot_update_vehicle(
         json={
             "make": "Honda",
             "model": "City",
+            "category": "Sedan",
             "year": 2025,
             "price": 40000,
             "stock": 10,
@@ -435,6 +456,7 @@ def test_customer_cannot_delete_vehicle(
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
@@ -464,6 +486,7 @@ def test_customer_cannot_restock_vehicle(
         json={
             "make": "Toyota",
             "model": "Camry",
+            "category": "Sedan",
             "year": 2024,
             "price": 35000,
             "stock": 5,
