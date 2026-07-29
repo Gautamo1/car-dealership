@@ -1,6 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { describe, test, expect, vi } from "vitest";
 import Login from "./Login";
+
+const mockLogin = vi.fn();
+
+vi.mock("../api/auth", () => ({
+  login: (...args) => mockLogin(...args),
+}));
 
 describe("Login Page", () => {
   test("renders email input", () => {
@@ -42,5 +49,34 @@ describe("Login Page", () => {
     await user.type(password, "password123");
 
     expect(password).toHaveValue("password123");
+  });
+
+  test("submits login credentials", async () => {
+    mockLogin.mockResolvedValue({});
+
+    const user = userEvent.setup();
+
+    render(<Login />);
+
+    await user.type(
+      screen.getByPlaceholderText(/email/i),
+      "admin@test.com"
+    );
+
+    await user.type(
+      screen.getByPlaceholderText(/password/i),
+      "password123"
+    );
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /login/i,
+      })
+    );
+
+    expect(mockLogin).toHaveBeenCalledWith({
+      email: "admin@test.com",
+      password: "password123",
+    });
   });
 });
