@@ -37,3 +37,6 @@ class VehicleFilter(BaseModel):
     year: int | None = None
     min_price: Decimal | None = None
     max_price: Decimal | None = None
+
+class RestockRequest(BaseModel):
+    quantity: int = Field(gt=0)

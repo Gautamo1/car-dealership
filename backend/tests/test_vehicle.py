@@ -280,3 +280,33 @@ def test_purchase_out_of_stock_vehicle(client, auth_headers):
     assert response.json() == {
         "detail": "Vehicle is out of stock"
     }
+
+def test_restock_vehicle(client, auth_headers):
+
+    create_response = client.post(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    vehicle = create_response.json()
+
+    response = client.post(
+        f"/api/v1/vehicles/{vehicle['id']}/restock",
+        headers=auth_headers,
+        json={
+            "quantity": 10,
+        },
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    updated = response.json()
+
+    assert updated["stock"] == 15
