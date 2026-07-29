@@ -226,3 +226,31 @@ def test_filter_vehicles_by_make(client, auth_headers):
 
     assert len(vehicles) == 1
     assert vehicles[0]["make"] == "Toyota"
+
+
+def test_purchase_vehicle(client, auth_headers):
+
+    create_response = client.post(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    vehicle = create_response.json()
+
+    response = client.post(
+        f"/api/v1/vehicles/{vehicle['id']}/purchase",
+        headers=auth_headers,
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    updated = response.json()
+
+    assert updated["stock"] == 4
