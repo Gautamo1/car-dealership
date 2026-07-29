@@ -5,14 +5,22 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    await login({
-      email,
-      password,
-    });
-  }
+    async function handleSubmit(e) {
+      e.preventDefault();
+    
+      try {
+        const data = await login({
+          email,
+          password,
+        });
+    
+        localStorage.setItem("token", data.access_token);
+    
+        console.log(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
