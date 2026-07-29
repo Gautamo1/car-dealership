@@ -87,3 +87,25 @@ class VehicleService:
             db=db,
             vehicle=vehicle,
         )
+
+
+    @staticmethod
+    def purchase(
+        db: Session,
+        vehicle_id: int,
+    ):
+        vehicle = VehicleService._get_vehicle_or_404(
+            db=db,
+            vehicle_id=vehicle_id,
+        )
+    
+        if vehicle.stock <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Vehicle is out of stock",
+            )
+    
+        return VehicleRepository.purchase(
+            db=db,
+            vehicle=vehicle,
+        )

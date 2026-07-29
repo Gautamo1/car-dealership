@@ -83,3 +83,16 @@ class VehicleRepository:
     ) -> None:
         db.delete(vehicle)
         db.commit()
+
+
+    @staticmethod
+    def purchase(
+        db: Session,
+        vehicle: Vehicle,
+    ) -> Vehicle:
+        vehicle.stock -= 1
+
+        db.commit()
+        db.refresh(vehicle)
+
+        return vehicle

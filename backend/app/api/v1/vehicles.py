@@ -83,3 +83,18 @@ def delete_vehicle(
     )
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post(
+    "/{vehicle_id}/purchase",
+    response_model=VehicleResponse,
+)
+def purchase_vehicle(
+    vehicle_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return VehicleService.purchase(
+        db=db,
+        vehicle_id=vehicle_id,
+    )
