@@ -216,7 +216,7 @@ def test_filter_vehicles_by_make(client, admin_headers, auth_headers):
     )
 
     response = client.get(
-        "/api/v1/vehicles?make=Toyota",
+        "/api/v1/vehicles/search?make=Toyota",
         headers=auth_headers,
     )
 

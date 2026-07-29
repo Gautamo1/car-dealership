@@ -20,11 +20,11 @@ class VehicleService:
 
     
     @staticmethod
-    def get_all(
+    def search(
         db: Session,
         filters: VehicleFilter,
     ):
-        return VehicleRepository.get_all(
+        return VehicleRepository.search(
             db=db,
             filters=filters,
         )
@@ -125,3 +125,7 @@ class VehicleService:
             vehicle=vehicle,
             quantity=quantity,
         )
+    
+    @staticmethod
+    def get_all(db: Session):
+        return VehicleRepository.get_all(db)

@@ -34,6 +34,7 @@ class VehicleUpdate(BaseModel):
 class VehicleFilter(BaseModel):
     make: str | None = None
     model: str | None = None
+    category: str | None = None
     year: int | None = None
     min_price: Decimal | None = None
     max_price: Decimal | None = None

@@ -15,7 +15,7 @@ class VehicleRepository:
 
         return vehicle
     @staticmethod
-    def get_all(
+    def search(
         db: Session,
         filters: VehicleFilter,
     ):
@@ -23,12 +23,7 @@ class VehicleRepository:
 
         if filters.make:
             query = query.filter(
-                Vehicle.make == filters.make
-            )
-
-        if filters.model:
-            query = query.filter(
-                Vehicle.model == filters.model
+                Vehicle.make.ilike(f"%{filters.make}%")
             )
 
         if filters.year:
@@ -36,7 +31,7 @@ class VehicleRepository:
                 Vehicle.year == filters.year
             )
 
-        if filters.min_price:
+        if filters.min_price is not None:
             query = query.filter(
                 Vehicle.price >= filters.min_price
             )
@@ -45,6 +40,15 @@ class VehicleRepository:
             query = query.filter(
                 Vehicle.price <= filters.max_price
             )
+
+        if filters.model:
+            query = query.filter(Vehicle.model.ilike(f"%{filters.model}%"))
+
+
+        if filters.category:
+            query = query.filter(
+                Vehicle.category.ilike(f"%{filters.category}%")
+        )
 
         return query.all()
 
@@ -109,3 +113,7 @@ class VehicleRepository:
         db.refresh(vehicle)
     
         return vehicle
+
+    @staticmethod
+    def get_all(db: Session):
+        return db.query(Vehicle).all()

@@ -29,15 +29,24 @@ def create_vehicle(
     response_model=list[VehicleResponse],
 )
 def get_vehicles(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return VehicleService.get_all(db)
+
+@router.get(
+    "/search",
+    response_model=list[VehicleResponse],
+)
+def search_vehicles(
     filters: VehicleFilter = Depends(),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return VehicleService.get_all(
+    return VehicleService.search(
         db=db,
         filters=filters,
     )
-
 
 @router.get(
     "/{vehicle_id}",
