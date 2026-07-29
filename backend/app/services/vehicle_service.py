@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
-
+from app.schemas.vehicle import VehicleResponse, VehicleUpdate
 from app.repositories.vehicle_repository import VehicleRepository
+from fastapi import HTTPException, status
+
 
 
 class VehicleService:
@@ -18,14 +20,14 @@ class VehicleService:
 
     
     @staticmethod
-    def get_all(db: Session):
+    def get_all(db: Session)->list[VehicleResponse]:
         return VehicleRepository.get_all(db)
 
     @staticmethod
     def get_by_id(
         db: Session,
         vehicle_id: int,
-    ):
+    )->VehicleResponse:
         vehicle = VehicleRepository.get_by_id(
             db=db,
             vehicle_id=vehicle_id,
@@ -38,3 +40,27 @@ class VehicleService:
             )
 
         return vehicle
+
+
+    @staticmethod
+    def update(
+        db: Session,
+        vehicle_id: int,
+        request: VehicleUpdate,
+    ):
+        vehicle = VehicleRepository.get_by_id(
+            db=db,
+            vehicle_id=vehicle_id,
+        )
+
+        if vehicle is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Vehicle not found",
+            )
+
+        return VehicleRepository.update(
+            db=db,
+            vehicle=vehicle,
+            request=request,
+        )

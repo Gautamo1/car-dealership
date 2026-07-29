@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.vehicle import Vehicle
-
+from app.schemas.vehicle import VehicleUpdate
 
 class VehicleRepository:
 
@@ -28,3 +28,20 @@ class VehicleRepository:
             .filter(Vehicle.id == vehicle_id)
             .first()
         )
+
+    @staticmethod
+    def update(
+        db: Session,
+        vehicle: Vehicle,
+        request: VehicleUpdate,
+    ) -> Vehicle:
+        vehicle.make = request.make
+        vehicle.model = request.model
+        vehicle.year = request.year
+        vehicle.price = request.price
+        vehicle.stock = request.stock
+    
+        db.commit()
+        db.refresh(vehicle)
+    
+        return vehicle
