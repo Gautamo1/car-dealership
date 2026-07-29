@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.user import User
+from app.models.enums import UserRole
 
 
 class UserRepository:
@@ -23,19 +24,21 @@ class UserRepository:
         username: str,
         email: str,
         password: str,
-    ) -> User:
-
+        role: UserRole,
+    ):
         user = User(
             username=username,
             email=email,
             password=password,
+            role=role,
         )
-
+    
         db.add(user)
         db.commit()
         db.refresh(user)
-
+    
         return user
+    
 
     @staticmethod
     def get_by_id(

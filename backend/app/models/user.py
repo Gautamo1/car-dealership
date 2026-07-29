@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Enum
 from app.db.database import Base
 
+from app.models.enums import UserRole
 
 class User(Base):
     __tablename__ = "users"
@@ -13,4 +14,8 @@ class User(Base):
 
     password = Column(String, nullable=False)
 
-    role = Column(String, nullable=False, default="customer")
+    role = Column(
+        Enum(UserRole),
+        nullable=False,
+        default=UserRole.CUSTOMER,
+    )

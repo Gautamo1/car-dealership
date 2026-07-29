@@ -3,6 +3,7 @@ from fastapi import status
 from sqlalchemy.orm import Session
 from app.core.jwt import create_access_token
 from app.core.security import verify_password
+from app.models.enums import UserRole
 
 from app.core.security import hash_password
 from app.repositories.user_repository import UserRepository
@@ -16,6 +17,7 @@ class AuthService:
         username: str,
         email: str,
         password: str,
+        role: UserRole,
     ):
 
         existing_user = UserRepository.get_by_email(
@@ -35,6 +37,7 @@ class AuthService:
             username=username,
             email=email,
             password=hash_password(password),
+            role=role,
         )
 
     @staticmethod

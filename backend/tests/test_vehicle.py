@@ -363,3 +363,26 @@ def test_restock_vehicle_negative_quantity(client, auth_headers):
     )
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
+def test_customer_cannot_create_vehicle(
+    client,
+    auth_headers,
+):
+
+    response = client.post(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.json() == {
+        "detail": "Admin access required"
+    }

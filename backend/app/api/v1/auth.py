@@ -26,12 +26,14 @@ def register(
         username=request.username,
         email=request.email,
         password=request.password,
+        role=request.role,
     )
 
     return {
         "id": user.id,
         "username": user.username,
         "email": user.email,
+        "role": user.role.value,
     }
 
 @router.post("/login")

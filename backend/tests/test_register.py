@@ -74,6 +74,7 @@ def test_register_admin_user(client):
     response = client.post(
         "/api/v1/auth/register",
         json={
+            "username": "admin",
             "email": "admin@example.com",
             "password": "password123",
             "role": "admin",
