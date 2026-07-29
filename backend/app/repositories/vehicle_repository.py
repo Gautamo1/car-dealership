@@ -40,8 +40,16 @@ class VehicleRepository:
         vehicle.year = request.year
         vehicle.price = request.price
         vehicle.stock = request.stock
-    
+
         db.commit()
         db.refresh(vehicle)
-    
+
         return vehicle
+
+    @staticmethod
+    def delete(
+        db: Session,
+        vehicle: Vehicle,
+    ) -> None:
+        db.delete(vehicle)
+        db.commit()

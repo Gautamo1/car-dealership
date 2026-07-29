@@ -67,3 +67,18 @@ class VehicleService:
             vehicle=vehicle,
             request=request,
         )
+
+    @staticmethod
+    def delete(
+        db: Session,
+        vehicle_id: int,
+    ) -> None:
+        vehicle = VehicleService._get_vehicle_or_404(
+            db=db,
+            vehicle_id=vehicle_id,
+        )
+    
+        VehicleRepository.delete(
+            db=db,
+            vehicle=vehicle,
+        )
