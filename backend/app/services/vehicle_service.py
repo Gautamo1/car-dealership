@@ -15,3 +15,8 @@ class VehicleService:
             price=request.price,
             stock=request.stock,
         )
+
+    
+    @staticmethod
+    def get_all(db: Session):
+        return VehicleRepository.get_all(db)

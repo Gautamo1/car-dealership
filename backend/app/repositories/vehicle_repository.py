@@ -14,3 +14,6 @@ class VehicleRepository:
         db.refresh(vehicle)
 
         return vehicle
+    @staticmethod
+    def get_all(db: Session):
+        return db.query(Vehicle).all()

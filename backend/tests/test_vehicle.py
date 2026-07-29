@@ -1,35 +1,13 @@
 from fastapi import status
+from decimal import Decimal
 
 
-def create_user_and_token(client):
-    client.post(
-        "/api/v1/auth/register",
-        json={
-            "username": "admin",
-            "email": "admin@example.com",
-            "password": "password123",
-        },
-    )
 
-    response = client.post(
-        "/api/v1/auth/login",
-        json={
-            "email": "admin@example.com",
-            "password": "password123",
-        },
-    )
-
-    return response.json()["access_token"]
-
-
-def test_create_vehicle(client):
-    token = create_user_and_token(client)
+def test_create_vehicle(client, auth_headers):
 
     response = client.post(
         "/api/v1/vehicles",
-        headers={
-            "Authorization": f"Bearer {token}",
-        },
+        headers=auth_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -48,3 +26,41 @@ def test_create_vehicle(client):
     assert body["year"] == 2024
     assert body["price"] == "35000.00"
     assert body["stock"] == 5
+
+
+def test_get_all_vehicles(client, auth_headers):
+
+    create_response = client.post(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    assert create_response.status_code == status.HTTP_201_CREATED
+
+    response = client.get(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    vehicles = response.json()
+
+    assert len(vehicles) == 1
+
+    vehicle = vehicles[0]
+
+    assert vehicle["make"] == "Toyota"
+    assert vehicle["model"] == "Camry"
+    assert vehicle["year"] == 2024
+    assert Decimal(vehicle["price"]) == Decimal("35000.00")
+    assert vehicle["stock"] == 5
+
+

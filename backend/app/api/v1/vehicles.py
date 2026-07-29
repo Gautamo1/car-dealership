@@ -23,8 +23,12 @@ def create_vehicle(
     return VehicleService.create(db, request)
 
 
-@router.get("")
+@router.get(
+    "",
+    response_model=list[VehicleResponse],
+)
 def get_vehicles(
+    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return []
+    return VehicleService.get_all(db=db)
