@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.schemas.vehicle import VehicleResponse, VehicleUpdate
+from app.schemas.vehicle import VehicleResponse, VehicleUpdate, VehicleFilter
 from app.repositories.vehicle_repository import VehicleRepository
 from fastapi import HTTPException, status
 
@@ -20,9 +20,14 @@ class VehicleService:
 
     
     @staticmethod
-    def get_all(db: Session)->list[VehicleResponse]:
-        return VehicleRepository.get_all(db)
-
+    def get_all(
+        db: Session,
+        filters: VehicleFilter,
+    ):
+        return VehicleRepository.get_all(
+            db=db,
+            filters=filters,
+        )
     @staticmethod
     def _get_vehicle_or_404(
         db: Session,
@@ -77,7 +82,7 @@ class VehicleService:
             db=db,
             vehicle_id=vehicle_id,
         )
-    
+
         VehicleRepository.delete(
             db=db,
             vehicle=vehicle,

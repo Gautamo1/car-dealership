@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.dependencies.auth import get_current_user
 from app.models.user import User
-from app.schemas.vehicle import VehicleCreate, VehicleResponse, VehicleUpdate
+from app.schemas.vehicle import VehicleCreate, VehicleResponse, VehicleUpdate, VehicleFilter
 from app.services.vehicle_service import VehicleService
 
 router = APIRouter(prefix="/vehicles", tags=["Vehicles"])
@@ -28,10 +28,14 @@ def create_vehicle(
     response_model=list[VehicleResponse],
 )
 def get_vehicles(
+    filters: VehicleFilter = Depends(),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return VehicleService.get_all(db=db)
+    return VehicleService.get_all(
+        db=db,
+        filters=filters,
+    )
 
 
 @router.get(
