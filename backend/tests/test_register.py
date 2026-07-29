@@ -22,7 +22,7 @@ def test_register_user():
         "/api/auth/register",
         json={
             "username": "gautam",
-            "email": "gautam@example.com",
+            "email": "gautam@example2.com",
             "password": "password123",
         },
     )
@@ -32,5 +32,5 @@ def test_register_user():
     body = response.json()
 
     assert body["username"] == "gautam"
-    assert body["email"] == "gautam@example.com"
+    assert body["email"] == "gautam@example2.com"
     assert "id" in body
