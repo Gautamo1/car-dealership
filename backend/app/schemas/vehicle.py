@@ -22,3 +22,10 @@ class VehicleResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class VehicleUpdate(BaseModel):
+    make: str
+    model: str
+    year: int = Field(ge=1886)
+    price: Decimal = Field(gt=0)
+    stock: int = Field(ge=0)
