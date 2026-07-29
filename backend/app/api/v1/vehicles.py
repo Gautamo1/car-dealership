@@ -32,3 +32,18 @@ def get_vehicles(
     current_user: User = Depends(get_current_user),
 ):
     return VehicleService.get_all(db=db)
+
+
+@router.get(
+    "/{vehicle_id}",
+    response_model=VehicleResponse,
+)
+def get_vehicle(
+    vehicle_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return VehicleService.get_by_id(
+        db=db,
+        vehicle_id=vehicle_id,
+    )

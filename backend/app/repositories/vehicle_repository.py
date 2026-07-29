@@ -17,3 +17,14 @@ class VehicleRepository:
     @staticmethod
     def get_all(db: Session):
         return db.query(Vehicle).all()
+
+    @staticmethod
+    def get_by_id(
+        db: Session,
+        vehicle_id: int,
+    ):
+        return (
+            db.query(Vehicle)
+            .filter(Vehicle.id == vehicle_id)
+            .first()
+        )
