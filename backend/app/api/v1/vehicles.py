@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.dependencies.auth import get_current_user
+from app.dependencies.auth import get_current_user, require_admin
 from app.models.user import User
 from app.schemas.vehicle import VehicleCreate, VehicleResponse, VehicleUpdate, VehicleFilter, RestockRequest
 from app.services.vehicle_service import VehicleService
@@ -19,7 +19,7 @@ router = APIRouter(prefix="/vehicles", tags=["Vehicles"])
 def create_vehicle(
     request: VehicleCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_admin),
 ):
     return VehicleService.create(db, request)
 

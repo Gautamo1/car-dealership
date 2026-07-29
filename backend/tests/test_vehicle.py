@@ -3,11 +3,11 @@ from decimal import Decimal
 
 
 
-def test_create_vehicle(client, auth_headers):
+def test_create_vehicle(client, admin_headers):
 
     response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -28,11 +28,11 @@ def test_create_vehicle(client, auth_headers):
     assert body["stock"] == 5
 
 
-def test_get_all_vehicles(client, auth_headers):
+def test_get_all_vehicles(client, admin_headers):
 
     create_response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -46,7 +46,7 @@ def test_get_all_vehicles(client, auth_headers):
 
     response = client.get(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
     )
 
     assert response.status_code == status.HTTP_200_OK
@@ -65,10 +65,10 @@ def test_get_all_vehicles(client, auth_headers):
 
 
 
-def test_get_vehicle_by_id(client, auth_headers):
+def test_get_vehicle_by_id(client, admin_headers, auth_headers):
     create_response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -99,11 +99,11 @@ def test_get_vehicle_by_id(client, auth_headers):
     assert vehicle["stock"] == 5
 
 
-def test_update_vehicle(client, auth_headers):
+def test_update_vehicle(client, admin_headers, auth_headers):
 
     create_response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -117,7 +117,7 @@ def test_update_vehicle(client, auth_headers):
 
     response = client.put(
         f"/api/v1/vehicles/{vehicle['id']}",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Honda",
             "model": "City",
@@ -139,11 +139,11 @@ def test_update_vehicle(client, auth_headers):
     assert body["stock"] == 10
 
 
-def test_update_nonexistent_vehicle(client, auth_headers):
+def test_update_nonexistent_vehicle(client, admin_headers):
 
     response = client.put(
         "/api/v1/vehicles/999",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Honda",
             "model": "City",
@@ -159,11 +159,11 @@ def test_update_nonexistent_vehicle(client, auth_headers):
     }
 
 
-def test_delete_vehicle(client, auth_headers):
+def test_delete_vehicle(client, admin_headers):
 
     create_response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -177,23 +177,23 @@ def test_delete_vehicle(client, auth_headers):
 
     response = client.delete(
         f"/api/v1/vehicles/{vehicle['id']}",
-        headers=auth_headers,
+        headers=admin_headers,
     )
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
     response = client.get(
         f"/api/v1/vehicles/{vehicle['id']}",
-        headers=auth_headers,
+        headers=admin_headers,
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
-def test_filter_vehicles_by_make(client, auth_headers):
+def test_filter_vehicles_by_make(client, admin_headers, auth_headers):
 
     client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -205,7 +205,7 @@ def test_filter_vehicles_by_make(client, auth_headers):
 
     client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Honda",
             "model": "City",
@@ -228,11 +228,11 @@ def test_filter_vehicles_by_make(client, auth_headers):
     assert vehicles[0]["make"] == "Toyota"
 
 
-def test_purchase_vehicle(client, auth_headers):
+def test_purchase_vehicle(client, admin_headers, auth_headers):
 
     create_response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -255,11 +255,11 @@ def test_purchase_vehicle(client, auth_headers):
 
     assert updated["stock"] == 4
 
-def test_purchase_out_of_stock_vehicle(client, auth_headers):
+def test_purchase_out_of_stock_vehicle(client, admin_headers, auth_headers):
 
     create_response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -281,11 +281,11 @@ def test_purchase_out_of_stock_vehicle(client, auth_headers):
         "detail": "Vehicle is out of stock"
     }
 
-def test_restock_vehicle(client, auth_headers):
+def test_restock_vehicle(client, admin_headers):
 
     create_response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -299,7 +299,7 @@ def test_restock_vehicle(client, auth_headers):
 
     response = client.post(
         f"/api/v1/vehicles/{vehicle['id']}/restock",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "quantity": 10,
         },
@@ -311,11 +311,11 @@ def test_restock_vehicle(client, auth_headers):
 
     assert updated["stock"] == 15
 
-def test_restock_vehicle_invalid_quantity(client, auth_headers):
+def test_restock_vehicle_invalid_quantity(client, admin_headers):
 
     create_response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -329,7 +329,7 @@ def test_restock_vehicle_invalid_quantity(client, auth_headers):
 
     response = client.post(
         f"/api/v1/vehicles/{vehicle['id']}/restock",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "quantity": 0,
         },
@@ -338,11 +338,11 @@ def test_restock_vehicle_invalid_quantity(client, auth_headers):
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_restock_vehicle_negative_quantity(client, auth_headers):
+def test_restock_vehicle_negative_quantity(client, admin_headers):
 
     create_response = client.post(
         "/api/v1/vehicles",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "make": "Toyota",
             "model": "Camry",
@@ -356,7 +356,7 @@ def test_restock_vehicle_negative_quantity(client, auth_headers):
 
     response = client.post(
         f"/api/v1/vehicles/{vehicle['id']}/restock",
-        headers=auth_headers,
+        headers=admin_headers,
         json={
             "quantity": -5,
         },

@@ -2,6 +2,8 @@ from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import status
 from fastapi.security import OAuth2PasswordBearer
+from app.models.enums import UserRole
+from app.models.user import User
 
 from sqlalchemy.orm import Session
 
@@ -40,3 +42,15 @@ def get_current_user(
         )
 
     return user
+
+def require_admin(
+    current_user: User = Depends(get_current_user),
+) -> User:
+
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required",
+        )
+
+    return current_user
