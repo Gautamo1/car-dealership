@@ -29,3 +29,11 @@ class VehicleUpdate(BaseModel):
     year: int = Field(ge=1886)
     price: Decimal = Field(gt=0)
     stock: int = Field(ge=0)
+
+
+class VehicleFilter(BaseModel):
+    make: str | None = None
+    model: str | None = None
+    year: int | None = None
+    min_price: Decimal | None = None
+    max_price: Decimal | None = None

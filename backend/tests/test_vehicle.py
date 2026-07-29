@@ -188,3 +188,41 @@ def test_delete_vehicle(client, auth_headers):
     )
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+def test_filter_vehicles_by_make(client, auth_headers):
+
+    client.post(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    client.post(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+        json={
+            "make": "Honda",
+            "model": "City",
+            "year": 2024,
+            "price": 30000,
+            "stock": 4,
+        },
+    )
+
+    response = client.get(
+        "/api/v1/vehicles?make=Toyota",
+        headers=auth_headers,
+    )
+
+    assert response.status_code == status.HTTP_200_OK
+
+    vehicles = response.json()
+
+    assert len(vehicles) == 1
+    assert vehicles[0]["make"] == "Toyota"
