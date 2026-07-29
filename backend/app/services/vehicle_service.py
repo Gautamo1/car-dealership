@@ -24,10 +24,10 @@ class VehicleService:
         return VehicleRepository.get_all(db)
 
     @staticmethod
-    def get_by_id(
+    def _get_vehicle_or_404(
         db: Session,
         vehicle_id: int,
-    )->VehicleResponse:
+    ) -> VehicleResponse:
         vehicle = VehicleRepository.get_by_id(
             db=db,
             vehicle_id=vehicle_id,
@@ -41,23 +41,26 @@ class VehicleService:
 
         return vehicle
 
+    @staticmethod
+    def get_by_id(
+        db: Session,
+        vehicle_id: int,
+    ) -> VehicleResponse:
+        return VehicleService._get_vehicle_or_404(
+            db=db,
+            vehicle_id=vehicle_id,
+        )
 
     @staticmethod
     def update(
         db: Session,
         vehicle_id: int,
         request: VehicleUpdate,
-    ):
-        vehicle = VehicleRepository.get_by_id(
+    ) -> VehicleResponse:
+        vehicle = VehicleService._get_vehicle_or_404(
             db=db,
             vehicle_id=vehicle_id,
         )
-
-        if vehicle is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Vehicle not found",
-            )
 
         return VehicleRepository.update(
             db=db,
