@@ -310,3 +310,56 @@ def test_restock_vehicle(client, auth_headers):
     updated = response.json()
 
     assert updated["stock"] == 15
+
+def test_restock_vehicle_invalid_quantity(client, auth_headers):
+
+    create_response = client.post(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    vehicle = create_response.json()
+
+    response = client.post(
+        f"/api/v1/vehicles/{vehicle['id']}/restock",
+        headers=auth_headers,
+        json={
+            "quantity": 0,
+        },
+    )
+
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
+def test_restock_vehicle_negative_quantity(client, auth_headers):
+
+    create_response = client.post(
+        "/api/v1/vehicles",
+        headers=auth_headers,
+        json={
+            "make": "Toyota",
+            "model": "Camry",
+            "year": 2024,
+            "price": 35000,
+            "stock": 5,
+        },
+    )
+
+    vehicle = create_response.json()
+
+    response = client.post(
+        f"/api/v1/vehicles/{vehicle['id']}/restock",
+        headers=auth_headers,
+        json={
+            "quantity": -5,
+        },
+    )
+
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
