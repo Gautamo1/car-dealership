@@ -4,6 +4,8 @@ from app.api.v1.auth import router as auth_router
 from app.api.v1 import vehicles
 from app.db.database import Base
 from app.db.database import engine
+from app.models.user import User
+from app.models.vehicle import Vehicle
 
 import app.models.user
 
