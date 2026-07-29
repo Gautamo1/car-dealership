@@ -1,12 +1,13 @@
 from fastapi.testclient import TestClient
 from app.main import app
-
-
+from fastapi import status
+from app.db.database import SessionLocal
+from app.models.user import User
 
 
 def test_register_user(client):
     response = client.post(
-        "/api/auth/register",
+        "/api/v1/auth/register",
         json={
             "username": "gautam",
             "email": "gautam@example.com",
@@ -25,14 +26,14 @@ def test_duplicate_email(client):
     }
 
     response = client.post(
-        "/api/auth/register",
+        "/api/v1/auth/register",
         json=payload,
     )
 
     assert response.status_code == status.HTTP_201_CREATED
 
     response = client.post(
-        "/api/auth/register",
+        "/api/v1/auth/register",
         json=payload,
     )
 
@@ -41,3 +42,28 @@ def test_duplicate_email(client):
     assert response.json() == {
         "detail": "Email already registered"
     }
+
+
+def test_password_is_hashed(client):
+    payload = {
+        "username": "john",
+        "email": "john@example.com",
+        "password": "password123",
+    }
+
+    response = client.post(
+        "/api/v1/auth/register",
+        json=payload,
+    )
+
+    assert response.status_code == 201
+
+    db: Session = SessionLocal()
+
+    user = db.query(User).filter(User.email == payload["email"]).first()
+
+    db.close()
+
+    assert user is not None
+
+    assert user.password != payload["password"]
