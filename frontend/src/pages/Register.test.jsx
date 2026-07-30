@@ -28,6 +28,36 @@ describe("Register", () => {
     await user.type(screen.getByLabelText(/username/i), "john");
     await user.type(screen.getByLabelText(/email/i), "john@example.com");
     await user.type(screen.getByLabelText(/password/i), "secret123");
+    await user.selectOptions(screen.getByLabelText(/role/i), "admin");
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /register/i,
+      })
+    );
+
+    expect(registerUser).toHaveBeenCalledWith({
+      username: "john",
+      email: "john@example.com",
+      password: "secret123",
+      role: "admin",
+    });
+  });
+
+  test("defaults to customer role", async () => {
+    registerUser.mockResolvedValue({});
+
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <Register />
+      </MemoryRouter>
+    );
+
+    await user.type(screen.getByLabelText(/username/i), "john");
+    await user.type(screen.getByLabelText(/email/i), "john@example.com");
+    await user.type(screen.getByLabelText(/password/i), "secret123");
 
     await user.click(
       screen.getByRole("button", {

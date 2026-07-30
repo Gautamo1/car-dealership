@@ -12,6 +12,7 @@ export default function Register() {
     username: "",
     email: "",
     password: "",
+    role: "customer",
   });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,7 +32,6 @@ export default function Register() {
     try {
       await registerUser({
         ...form,
-        role: "customer",
       });
 
       navigate("/", {
@@ -55,7 +55,7 @@ export default function Register() {
         </h1>
 
         <p className="mb-6 text-center text-sm text-slate-600">
-          Register as a customer to purchase vehicles.
+          Register as an admin or customer.
         </p>
 
         {error ? (
@@ -108,6 +108,22 @@ export default function Register() {
           onChange={onChange}
           required
         />
+
+        <label htmlFor="role" className="mb-1 block text-sm font-medium text-slate-700">
+          Role
+        </label>
+
+        <select
+          id="role"
+          name="role"
+          className="mb-6 w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          value={form.role}
+          onChange={onChange}
+          required
+        >
+          <option value="customer">Customer</option>
+          <option value="admin">Admin</option>
+        </select>
 
         <LoadingButton
           type="submit"
