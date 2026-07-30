@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { login } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+
+  const navigate = useNavigate();
 
     async function handleSubmit(e) {
       e.preventDefault();
@@ -16,7 +20,7 @@ export default function Login() {
     
         localStorage.setItem("token", data.access_token);
     
-        console.log(data);
+        navigate("/dashboard");
       } catch (error) {
         console.error(error);
       }
