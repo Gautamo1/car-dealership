@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
+import { isAdmin } from "../utils/auth";
 
 export default function VehicleCard({
   vehicle,
   onDelete,
   onPurchase,
+  onRestock
 }) {
   const navigate = useNavigate();
 
@@ -39,6 +41,11 @@ export default function VehicleCard({
     >
      Purchase
    </button>
+   {isAdmin() && (
+     <button onClick={() => onRestock(vehicle.id)}>
+       Restock
+     </button>
+   )}
     </li>
   );
 }

@@ -4,7 +4,9 @@ import {
   getVehicles,
   deleteVehicle,
 } from "../api/vehicle";
-import { purchaseVehicle } from "../api/inventory";
+import { purchaseVehicle,
+        restockVehicle,
+ } from "../api/inventory";
 
 export default function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
@@ -22,6 +24,14 @@ export default function VehicleList() {
 
   async function handlePurchase(id) {
     await purchaseVehicle(id);
+    await loadVehicles();
+  }
+  async function handleRestock(id) {
+    const quantity = Number(prompt("Enter quantity to add"));
+  
+    if (!quantity || quantity <= 0) return;
+  
+    await restockVehicle(id, quantity);
     await loadVehicles();
   }
 
@@ -57,6 +67,7 @@ export default function VehicleList() {
             vehicle={vehicle}
             onDelete={handleDelete}
             onPurchase={handlePurchase}
+            onRestock={handleRestock}
           />
         ))}
       </ul>
