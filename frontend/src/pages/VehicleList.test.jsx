@@ -114,3 +114,24 @@ test("filters vehicles when searching", async () => {
   expect(screen.getByText("Toyota")).toBeInTheDocument();
   expect(screen.queryByText("Honda")).not.toBeInTheDocument();
 });
+
+test("displays complete vehicle information", async () => {
+  mockGetVehicles.mockResolvedValue([
+    {
+      id: 1,
+      make: "Toyota",
+      model: "Camry",
+      year: 2024,
+      category: "Sedan",
+      price: 30000,
+    },
+  ]);
+
+  render(<VehicleList />);
+
+  expect(await screen.findByText("Toyota")).toBeInTheDocument();
+  expect(screen.getByText("Camry")).toBeInTheDocument();
+  expect(screen.getByText("2024")).toBeInTheDocument();
+  expect(screen.getByText("Sedan")).toBeInTheDocument();
+  expect(screen.getByText("$30,000")).toBeInTheDocument();
+});
