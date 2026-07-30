@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { createVehicle } from "../api/vehicle";
 
 export default function VehicleForm() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     make: "",
     model: "",
@@ -10,21 +12,20 @@ export default function VehicleForm() {
     category: "",
     price: "",
   });
-  const navigate = useNavigate();
-
-  async function handleSubmit(e) {
-  e.preventDefault();
-
-  await createVehicle(form);
-
-  navigate("/dashboard");
-}
 
   function handleChange(e) {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    await createVehicle(form);
+
+    navigate("/dashboard");
   }
 
   return (
