@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import VehicleList from "./VehicleList";
-import { logout } from "../utils/auth";
+import { logout, isAdmin } from "../utils/auth";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -17,6 +17,12 @@ export default function Dashboard() {
       <button onClick={handleLogout}>
         Logout
       </button>
+
+      {isAdmin() && (
+        <button onClick={() => navigate("/vehicles/new")}>
+          Create Vehicle
+        </button>
+      )}
 
       <VehicleList />
     </div>

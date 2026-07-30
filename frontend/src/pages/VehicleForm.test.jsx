@@ -46,9 +46,10 @@ test("submits a new vehicle", async () => {
   expect(mockCreateVehicle).toHaveBeenCalledWith({
     make: "Toyota",
     model: "Camry",
-    year: "2024",
+    year: 2024,
     category: "Sedan",
-    price: "30000",
+    price: 30000,
+    stock: 0,
   });
 
   expect(mockNavigate).toHaveBeenCalledWith("/dashboard");

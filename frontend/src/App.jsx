@@ -7,6 +7,7 @@ import VehicleDetails from "./pages/VehicleDetails";
 import PublicRoute from "./components/PublicRoute";
 import VehicleForm from "./pages/VehicleForm";
 import VehicleEdit from "./pages/VehicleEdit";
+import AdminRoute from "./components/AdminRoute";
 
 export default function App() {
   return (
@@ -25,7 +26,9 @@ export default function App() {
             path="/vehicles/:id/edit"
             element={
               <ProtectedRoute>
-                <VehicleEdit />
+                <AdminRoute>
+                  <VehicleEdit />
+                </AdminRoute>
               </ProtectedRoute>
             }
           />
@@ -51,7 +54,9 @@ export default function App() {
             path="/vehicles/new"
             element={
               <ProtectedRoute>
-                <VehicleForm />
+                <AdminRoute>
+                  <VehicleForm />
+                </AdminRoute>
               </ProtectedRoute>
             }
           />

@@ -31,6 +31,7 @@ export default function VehicleForm({
         <input
           id="year"
           name="year"
+          type="number"
           value={form.year}
           onChange={onChange}
         />
@@ -51,10 +52,21 @@ export default function VehicleForm({
         <input
           id="price"
           name="price"
+          type="number"
           value={form.price}
           onChange={onChange}
         />
       </div>
+      <div>
+      <label htmlFor="stock">Stock</label>
+      <input
+        id="stock"
+        name="stock"
+        type="number"
+        value={form.stock}
+        onChange={onChange}
+      />
+       </div>   
 
       <button type="submit">
         {buttonText}

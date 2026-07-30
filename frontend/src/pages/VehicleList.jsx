@@ -41,13 +41,10 @@ export default function VehicleList() {
       vehicle.category.toLowerCase().includes(query)
     );
   });
-
+  console.log(localStorage.getItem("token"));
   return (
     <div>
       <h1>Vehicles</h1>
-      <button onClick={() => navigate("/vehicles/new")}>
-        Add Vehicle
-      </button>
       <input
         type="text"
         placeholder="Search"

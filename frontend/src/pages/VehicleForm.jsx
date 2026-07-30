@@ -12,6 +12,7 @@ export default function VehicleForm() {
     year: "",
     category: "",
     price: "",
+    stock: "",
   });
 
   function handleChange(e) {
@@ -23,9 +24,18 @@ export default function VehicleForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    await createVehicle(form);
-
+  
+    const payload = {
+      ...form,
+      year: Number(form.year),
+      price: Number(form.price),
+      stock: Number(form.stock),
+    };
+  
+    console.log(payload);
+  
+    await createVehicle(payload);
+  
     navigate("/dashboard");
   }
 
