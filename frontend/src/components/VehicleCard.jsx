@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 export default function VehicleCard({
   vehicle,
   onDelete,
+  onPurchase,
 }) {
   const navigate = useNavigate();
 
@@ -25,12 +26,19 @@ export default function VehicleCard({
       <p>{vehicle.year}</p>
       <p>{vehicle.category}</p>
       <p>${vehicle.price.toLocaleString()}</p>
+      <p>Stock: {vehicle.stock}</p>
 
       <button
         onClick={() => onDelete(vehicle.id)}
       >
         Delete
       </button>
+      <button
+     onClick={() => onPurchase(vehicle.id)}
+     disabled={vehicle.stock === 0}
+    >
+     Purchase
+   </button>
     </li>
   );
 }

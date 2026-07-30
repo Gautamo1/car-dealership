@@ -1,34 +1,31 @@
 import { useEffect, useState } from "react";
 import VehicleCard from "../components/VehicleCard";
-import { useNavigate } from "react-router-dom";
 import {
   getVehicles,
   deleteVehicle,
 } from "../api/vehicle";
-
-
+import { purchaseVehicle } from "../api/inventory";
 
 export default function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
   const [search, setSearch] = useState("");
-  const navigate = useNavigate();
 
   async function loadVehicles() {
     const data = await getVehicles();
     setVehicles(data);
-}
+  }
 
   async function handleDelete(id) {
     await deleteVehicle(id);
     await loadVehicles();
   }
 
-  useEffect(() => {
-    async function loadVehicles() {
-      const data = await getVehicles();
-      setVehicles(data);
-    }
+  async function handlePurchase(id) {
+    await purchaseVehicle(id);
+    await loadVehicles();
+  }
 
+  useEffect(() => {
     loadVehicles();
   }, []);
 
@@ -41,10 +38,11 @@ export default function VehicleList() {
       vehicle.category.toLowerCase().includes(query)
     );
   });
-  console.log(localStorage.getItem("token"));
+
   return (
     <div>
       <h1>Vehicles</h1>
+
       <input
         type="text"
         placeholder="Search"
@@ -58,6 +56,7 @@ export default function VehicleList() {
             key={vehicle.id}
             vehicle={vehicle}
             onDelete={handleDelete}
+            onPurchase={handlePurchase}
           />
         ))}
       </ul>
