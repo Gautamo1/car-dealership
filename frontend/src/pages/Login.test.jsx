@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 import { describe, test, expect, vi } from "vitest";
 import Login from "./Login";
@@ -8,6 +9,16 @@ const mockLogin = vi.fn();
 vi.mock("../api/auth", () => ({
   login: (...args) => mockLogin(...args),
 }));
+const mockNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 describe("Login Page", () => {
   test("renders email input", () => {
@@ -79,4 +90,36 @@ describe("Login Page", () => {
       password: "password123",
     });
   });
+});
+
+test("redirects to dashboard after successful login", async () => {
+  mockLogin.mockResolvedValue({
+    access_token: "fake-jwt",
+  });
+
+  const user = userEvent.setup();
+
+  render(
+    <MemoryRouter>
+      <Login />
+    </MemoryRouter>
+  );
+
+  await user.type(
+    screen.getByPlaceholderText(/email/i),
+    "admin@test.com"
+  );
+
+  await user.type(
+    screen.getByPlaceholderText(/password/i),
+    "password123"
+  );
+
+  await user.click(
+    screen.getByRole("button", {
+      name: /login/i,
+    })
+  );
+
+  expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
 });
