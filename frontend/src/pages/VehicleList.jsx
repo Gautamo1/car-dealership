@@ -4,6 +4,7 @@ import VehicleCard from "../components/VehicleCard";
 
 export default function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function loadVehicles() {
@@ -14,16 +15,33 @@ export default function VehicleList() {
     loadVehicles();
   }, []);
 
+  const filteredVehicles = vehicles.filter((vehicle) => {
+    const query = search.toLowerCase();
+
+    return (
+      vehicle.make.toLowerCase().includes(query) ||
+      vehicle.model.toLowerCase().includes(query) ||
+      vehicle.category.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <div>
       <h1>Vehicles</h1>
 
+      <input
+        type="text"
+        placeholder="Search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
       <ul>
-        {vehicles.map((vehicle) => (
-            <VehicleCard
+        {filteredVehicles.map((vehicle) => (
+          <VehicleCard
             key={vehicle.id}
             vehicle={vehicle}
-            />
+          />
         ))}
       </ul>
     </div>
