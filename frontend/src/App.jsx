@@ -6,6 +6,7 @@ import VehicleList from "./pages/VehicleList";
 import VehicleDetails from "./pages/VehicleDetails";
 import PublicRoute from "./components/PublicRoute";
 import VehicleForm from "./pages/VehicleForm";
+import VehicleEdit from "./pages/VehicleEdit";
 
 export default function App() {
   return (
@@ -17,6 +18,15 @@ export default function App() {
               <PublicRoute>
                 <Login />
               </PublicRoute>
+            }
+          />
+          
+          <Route
+            path="/vehicles/:id/edit"
+            element={
+              <ProtectedRoute>
+                <VehicleEdit />
+              </ProtectedRoute>
             }
           />
       
