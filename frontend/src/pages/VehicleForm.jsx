@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createVehicle } from "../api/vehicle";
 
 export default function VehicleForm() {
   const [form, setForm] = useState({
@@ -8,6 +10,15 @@ export default function VehicleForm() {
     category: "",
     price: "",
   });
+  const navigate = useNavigate();
+
+  async function handleSubmit(e) {
+  e.preventDefault();
+
+  await createVehicle(form);
+
+  navigate("/dashboard");
+}
 
   function handleChange(e) {
     setForm({
@@ -20,7 +31,7 @@ export default function VehicleForm() {
     <div>
       <h1>Add Vehicle</h1>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="make">Make</label>
           <input
