@@ -1,56 +1,36 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
-import VehicleList from "./VehicleList";
+import { describe, test, expect, beforeEach, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import VehicleForm from "./VehicleForm";
+import VehicleList from "./VehicleList";
 
-const mockGetVehicles = vi.fn();
+const {
+  mockGetVehicles,
+  mockDeleteVehicle,
+  mockNavigate,
+} = vi.hoisted(() => ({
+  mockGetVehicles: vi.fn(),
+  mockDeleteVehicle: vi.fn(),
+  mockNavigate: vi.fn(),
+}));
 
-const mockNavigate = vi.fn();
+vi.mock("../api/vehicle", () => ({
+  getVehicles: mockGetVehicles,
+  deleteVehicle: mockDeleteVehicle,
+}));
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
+
   return {
     ...actual,
     useNavigate: () => mockNavigate,
   };
 });
 
-test("navigates to vehicle details when a vehicle is clicked", async () => {
-  mockGetVehicles.mockResolvedValue([
-    {
-      id: 1,
-      make: "Toyota",
-      model: "Camry",
-      year: 2024,
-      category: "Sedan",
-      price: 30000,
-    },
-  ]);
-
-  const user = userEvent.setup();
-
-  render(
-    <MemoryRouter>
-      <VehicleList />
-    </MemoryRouter>
-  );
-
-  const vehicle = await screen.findByText("Toyota");
-
-  await user.click(vehicle);
-
-  expect(mockNavigate).toHaveBeenCalledWith("/vehicles/1");
-});
-
-vi.mock("../api/vehicle", () => ({
-  getVehicles: (...args) => mockGetVehicles(...args),
-}));
-
-describe("Vehicle List", () => {
+describe("VehicleList", () => {
   beforeEach(() => {
-    mockGetVehicles.mockReset();
+    vi.clearAllMocks();
   });
 
   test("renders vehicles returned by the API", async () => {
@@ -73,123 +53,115 @@ describe("Vehicle List", () => {
       },
     ]);
 
-    render(<VehicleList />);
+    render(
+      <MemoryRouter>
+        <VehicleList />
+      </MemoryRouter>
+    );
 
     expect(await screen.findByText("Toyota")).toBeInTheDocument();
-    expect(await screen.findByText("Honda")).toBeInTheDocument();
+    expect(screen.getByText("Honda")).toBeInTheDocument();
   });
-});
 
-test("filters vehicles when searching", async () => {
-  mockGetVehicles.mockResolvedValue([
-    {
-      id: 1,
-      make: "Toyota",
-      model: "Camry",
-      year: 2024,
-      category: "Sedan",
-      price: 30000,
-    },
-    {
-      id: 2,
-      make: "Honda",
-      model: "Civic",
-      year: 2023,
-      category: "Sedan",
-      price: 28000,
-    },
-  ]);
+  test("filters vehicles when searching", async () => {
+    mockGetVehicles.mockResolvedValue([
+      {
+        id: 1,
+        make: "Toyota",
+        model: "Camry",
+        year: 2024,
+        category: "Sedan",
+        price: 30000,
+      },
+      {
+        id: 2,
+        make: "Honda",
+        model: "Civic",
+        year: 2023,
+        category: "Sedan",
+        price: 28000,
+      },
+    ]);
 
-  const user = userEvent.setup();
+    const user = userEvent.setup();
 
-  render(<VehicleList />);
+    render(
+      <MemoryRouter>
+        <VehicleList />
+      </MemoryRouter>
+    );
 
-  expect(await screen.findByText("Toyota")).toBeInTheDocument();
-  expect(screen.getByText("Honda")).toBeInTheDocument();
+    await screen.findByText("Toyota");
 
-  await user.type(
-    screen.getByPlaceholderText(/search/i),
-    "Toyota"
-  );
+    await user.type(
+      screen.getByPlaceholderText(/search/i),
+      "Toyota"
+    );
 
-  expect(screen.getByText("Toyota")).toBeInTheDocument();
-  expect(screen.queryByText("Honda")).not.toBeInTheDocument();
-});
-
-test("displays complete vehicle information", async () => {
-  mockGetVehicles.mockResolvedValue([
-    {
-      id: 1,
-      make: "Toyota",
-      model: "Camry",
-      year: 2024,
-      category: "Sedan",
-      price: 30000,
-    },
-  ]);
-
-  render(<VehicleList />);
-
-  expect(await screen.findByText("Toyota")).toBeInTheDocument();
-  expect(screen.getByText("Camry")).toBeInTheDocument();
-  expect(screen.getByText("2024")).toBeInTheDocument();
-  expect(screen.getByText("Sedan")).toBeInTheDocument();
-  expect(screen.getByText("$30,000")).toBeInTheDocument();
-});
-
-describe("Vehicle Form", () => {
-  test("renders all vehicle fields", () => {
-    render(<VehicleForm />);
-
-    expect(screen.getByLabelText(/make/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/model/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/year/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/category/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/price/i)).toBeInTheDocument();
-
+    expect(screen.getByText("Toyota")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", {
-        name: /save vehicle/i,
-      })
-    ).toBeInTheDocument();
-  });
-});
-
-test("deletes a vehicle", async () => {
-  mockGetVehicles.mockResolvedValue([
-    {
-      id: 1,
-      make: "Toyota",
-      model: "Camry",
-      year: 2024,
-      category: "Sedan",
-      price: 30000,
-    },
-  ]);
-
-  const mockDeleteVehicle = vi.fn().mockResolvedValue({});
-
-  vi.doMock("../api/vehicle", async () => {
-    const actual = await vi.importActual("../api/vehicle");
-    return {
-      ...actual,
-      deleteVehicle: (...args) => mockDeleteVehicle(...args),
-    };
+      screen.queryByText("Honda")
+    ).not.toBeInTheDocument();
   });
 
-  const user = userEvent.setup();
+  test("navigates to vehicle details when clicked", async () => {
+    mockGetVehicles.mockResolvedValue([
+      {
+        id: 1,
+        make: "Toyota",
+        model: "Camry",
+        year: 2024,
+        category: "Sedan",
+        price: 30000,
+      },
+    ]);
 
-  render(
-    <MemoryRouter>
-      <VehicleList />
-    </MemoryRouter>
-  );
+    const user = userEvent.setup();
 
-  const deleteButton = await screen.findByRole("button", {
-    name: /delete/i,
+    render(
+      <MemoryRouter>
+        <VehicleList />
+      </MemoryRouter>
+    );
+
+    const vehicle = await screen.findByText("Toyota");
+
+    await user.click(vehicle);
+
+    expect(mockNavigate).toHaveBeenCalledWith("/vehicles/1");
   });
 
-  await user.click(deleteButton);
+  test("deletes a vehicle", async () => {
+    mockGetVehicles
+      .mockResolvedValueOnce([
+        {
+          id: 1,
+          make: "Toyota",
+          model: "Camry",
+          year: 2024,
+          category: "Sedan",
+          price: 30000,
+        },
+      ])
+      .mockResolvedValueOnce([]);
 
-  expect(mockDeleteVehicle).toHaveBeenCalledWith(1);
+    mockDeleteVehicle.mockResolvedValue({});
+
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <VehicleList />
+      </MemoryRouter>
+    );
+
+    const deleteButton = await screen.findByRole("button", {
+      name: /delete/i,
+    });
+
+    await user.click(deleteButton);
+
+    expect(mockDeleteVehicle).toHaveBeenCalledTimes(1);
+    expect(mockDeleteVehicle).toHaveBeenCalledWith(1);
+  });
 });

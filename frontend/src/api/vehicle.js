@@ -19,3 +19,8 @@ export async function updateVehicle(id, vehicle) {
   const response = await api.put(`/vehicles/${id}`, vehicle);
   return response.data;
 }
+
+export async function deleteVehicle(id) {
+  const response = await api.delete(`/vehicles/${id}`);
+  return response.data;
+}

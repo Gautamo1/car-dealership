@@ -1,12 +1,27 @@
 import { useEffect, useState } from "react";
-import { getVehicles } from "../api/vehicle";
 import VehicleCard from "../components/VehicleCard";
 import { useNavigate } from "react-router-dom";
+import {
+  getVehicles,
+  deleteVehicle,
+} from "../api/vehicle";
+
+
 
 export default function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+
+  async function loadVehicles() {
+    const data = await getVehicles();
+    setVehicles(data);
+}
+
+  async function handleDelete(id) {
+    await deleteVehicle(id);
+    await loadVehicles();
+  }
 
   useEffect(() => {
     async function loadVehicles() {
@@ -45,6 +60,7 @@ export default function VehicleList() {
           <VehicleCard
             key={vehicle.id}
             vehicle={vehicle}
+            onDelete={handleDelete}
           />
         ))}
       </ul>
