@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import VehicleList from "./pages/VehicleList";
 import VehicleDetails from "./pages/VehicleDetails";
 import PublicRoute from "./components/PublicRoute";
+import VehicleForm from "./pages/VehicleForm";
 
 export default function App() {
   return (
@@ -33,6 +34,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <VehicleDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vehicles/new"
+            element={
+              <ProtectedRoute>
+                <VehicleForm />
               </ProtectedRoute>
             }
           />

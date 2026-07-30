@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { getVehicles } from "../api/vehicle";
 import VehicleCard from "../components/VehicleCard";
+import { useNavigate } from "react-router-dom";
 
 export default function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadVehicles() {
@@ -28,7 +30,9 @@ export default function VehicleList() {
   return (
     <div>
       <h1>Vehicles</h1>
-
+      <button onClick={() => navigate("/vehicles/new")}>
+        Add Vehicle
+      </button>
       <input
         type="text"
         placeholder="Search"
