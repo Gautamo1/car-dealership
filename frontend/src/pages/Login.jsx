@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { login } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+import { saveToken } from "../utils/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -18,7 +19,7 @@ export default function Login() {
           password,
         });
     
-        localStorage.setItem("token", data.access_token);
+        saveToken(data.access_token);
     
         navigate("/dashboard");
       } catch (error) {

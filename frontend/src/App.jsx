@@ -20,7 +20,7 @@ export default function App() {
               </PublicRoute>
             }
           />
-          
+
           <Route
             path="/vehicles/:id/edit"
             element={
@@ -34,7 +34,7 @@ export default function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <VehicleList />
+                <Dashboard />
               </ProtectedRoute>
             }
           />
