@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import VehicleList from "./VehicleList";
 import { MemoryRouter } from "react-router-dom";
+import VehicleForm from "./VehicleForm";
 
 const mockGetVehicles = vi.fn();
 
@@ -134,4 +135,22 @@ test("displays complete vehicle information", async () => {
   expect(screen.getByText("2024")).toBeInTheDocument();
   expect(screen.getByText("Sedan")).toBeInTheDocument();
   expect(screen.getByText("$30,000")).toBeInTheDocument();
+});
+
+describe("Vehicle Form", () => {
+  test("renders all vehicle fields", () => {
+    render(<VehicleForm />);
+
+    expect(screen.getByLabelText(/make/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/model/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/year/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/category/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/price/i)).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("button", {
+        name: /save vehicle/i,
+      })
+    ).toBeInTheDocument();
+  });
 });
