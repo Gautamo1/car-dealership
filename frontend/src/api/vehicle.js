@@ -11,14 +11,8 @@ export async function getVehicle(id) {
 }
 
 export async function createVehicle(vehicle) {
-  try {
-    const response = await api.post("/vehicles", vehicle);
-    return response.data;
-  } catch (error) {
-    console.log("Status:", error.response?.status);
-    console.log("Response:", error.response?.data);
-    throw error;
-  }
+  const response = await api.post("/vehicles", vehicle);
+  return response.data;
 }
 
 export async function updateVehicle(id, vehicle) {

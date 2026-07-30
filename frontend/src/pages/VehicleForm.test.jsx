@@ -52,5 +52,10 @@ test("submits a new vehicle", async () => {
     stock: 0,
   });
 
-  expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+  expect(mockNavigate).toHaveBeenCalledWith(
+    "/dashboard",
+    {
+      state: { successMessage: "Vehicle created successfully" },
+    }
+  );
 });

@@ -49,7 +49,7 @@ def search_vehicles(
     )
 
 @router.get(
-    "/{vehicle_id}",
+    "/{vehicle_id:int}",
     response_model=VehicleResponse,
 )
 def get_vehicle(
@@ -63,7 +63,7 @@ def get_vehicle(
     )
 
 @router.put(
-    "/{vehicle_id}",
+    "/{vehicle_id:int}",
     response_model=VehicleResponse,
 )
 def update_vehicle(
@@ -79,7 +79,7 @@ def update_vehicle(
     )
 
 @router.delete(
-    "/{vehicle_id}",
+    "/{vehicle_id:int}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def delete_vehicle(
@@ -96,7 +96,7 @@ def delete_vehicle(
 
 
 @router.post(
-    "/{vehicle_id}/purchase",
+    "/{vehicle_id:int}/purchase",
     response_model=VehicleResponse,
 )
 def purchase_vehicle(
@@ -111,7 +111,7 @@ def purchase_vehicle(
 
 
 @router.post(
-    "/{vehicle_id}/restock",
+    "/{vehicle_id:int}/restock",
     response_model=VehicleResponse,
 )
 def restock_vehicle(

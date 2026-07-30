@@ -56,5 +56,10 @@ test("updates an existing vehicle", async () => {
 
   expect(mockUpdateVehicle).toHaveBeenCalled();
 
-  expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+  expect(mockNavigate).toHaveBeenCalledWith(
+    "/dashboard",
+    {
+      state: { successMessage: "Vehicle updated successfully" },
+    }
+  );
 });

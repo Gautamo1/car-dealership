@@ -3,6 +3,17 @@ import userEvent from "@testing-library/user-event";
 import { describe, test, expect, beforeEach, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import VehicleList from "./VehicleList";
+import jwtEncode from "jwt-encode";
+
+function createToken(role) {
+  return jwtEncode(
+    {
+      sub: "1",
+      role,
+    },
+    "secret"
+  );
+}
 
 const {
   mockGetVehicles,
@@ -31,6 +42,8 @@ vi.mock("react-router-dom", async () => {
 describe("VehicleList", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
+    localStorage.setItem("token", createToken("admin"));
   });
 
   test("renders vehicles returned by the API", async () => {

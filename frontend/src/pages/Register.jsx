@@ -1,19 +1,27 @@
 import { useState } from "react";
-import { login } from "../api/auth";
+import { registerUser } from "../api/auth";
 import { useNavigate } from "react-router-dom";
-import { saveToken } from "../utils/auth";
 import Alert from "../components/Alert";
 import LoadingButton from "../components/LoadingButton";
 import { getErrorMessage } from "../utils/error";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function Register() {
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const navigate = useNavigate();
-  const successMessage = window.history.state?.usr?.successMessage;
+  function onChange(e) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -21,16 +29,16 @@ export default function Login() {
     setIsSubmitting(true);
 
     try {
-      const data = await login({
-        email,
-        password,
+      await registerUser({
+        ...form,
+        role: "customer",
       });
 
-      saveToken(data.access_token);
-
-      navigate("/dashboard");
+      navigate("/", {
+        state: { successMessage: "Registration successful" },
+      });
     } catch (error) {
-      setError(getErrorMessage(error, "Unable to log in. Please try again."));
+      setError(getErrorMessage(error, "Unable to register. Please try again."));
     } finally {
       setIsSubmitting(false);
     }
@@ -43,24 +51,33 @@ export default function Login() {
         onSubmit={handleSubmit}
       >
         <h1 className="mb-2 text-center text-3xl font-bold text-slate-900">
-          Car Dealership
+          Create Account
         </h1>
 
         <p className="mb-6 text-center text-sm text-slate-600">
-          Sign in to manage inventory and purchases.
+          Register as a customer to purchase vehicles.
         </p>
-
-        {successMessage ? (
-          <Alert type="success" className="mb-4">
-            {successMessage}
-          </Alert>
-        ) : null}
 
         {error ? (
           <Alert type="error" className="mb-4">
             {error}
           </Alert>
         ) : null}
+
+        <label htmlFor="username" className="mb-1 block text-sm font-medium text-slate-700">
+          Username
+        </label>
+
+        <input
+          id="username"
+          type="text"
+          name="username"
+          placeholder="Username"
+          className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          value={form.username}
+          onChange={onChange}
+          required
+        />
 
         <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-700">
           Email
@@ -69,10 +86,11 @@ export default function Login() {
         <input
           id="email"
           type="email"
+          name="email"
           placeholder="Email"
           className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={form.email}
+          onChange={onChange}
           required
         />
 
@@ -83,30 +101,31 @@ export default function Login() {
         <input
           id="password"
           type="password"
+          name="password"
           placeholder="Password"
           className="mb-6 w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={form.password}
+          onChange={onChange}
           required
         />
 
         <LoadingButton
           type="submit"
           isLoading={isSubmitting}
-          loadingText="Signing in..."
+          loadingText="Creating account..."
           className="w-full bg-blue-600 text-white shadow-md shadow-blue-600/20 hover:bg-blue-700 focus:ring-blue-500"
         >
-          Login
+          Register
         </LoadingButton>
 
         <p className="mt-4 text-center text-sm text-slate-600">
-          Don't have an account?{" "}
+          Already have an account?{" "}
           <button
             type="button"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/")}
             className="font-semibold text-blue-600 hover:underline"
           >
-            Create an account
+            Login
           </button>
         </p>
       </form>

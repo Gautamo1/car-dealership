@@ -101,4 +101,36 @@ describe("RBAC", () => {
       })
     ).not.toBeInTheDocument();
   });
+
+  test("admin does not see Purchase button", async () => {
+    localStorage.setItem("token", createToken("admin"));
+
+    render(
+      <MemoryRouter>
+        <Dashboard />
+      </MemoryRouter>
+    );
+
+    expect(
+      screen.queryByRole("button", {
+        name: /purchase/i,
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  test("customer sees Purchase button", async () => {
+    localStorage.setItem("token", createToken("customer"));
+
+    render(
+      <MemoryRouter>
+        <Dashboard />
+      </MemoryRouter>
+    );
+
+    expect(
+      await screen.findByRole("button", {
+        name: /purchase/i,
+      })
+    ).toBeInTheDocument();
+  });
 });

@@ -8,6 +8,7 @@ import PublicRoute from "./components/PublicRoute";
 import VehicleForm from "./pages/VehicleForm";
 import VehicleEdit from "./pages/VehicleEdit";
 import AdminRoute from "./components/AdminRoute";
+import Register from "./pages/Register";
 
 export default function App() {
   return (
@@ -58,6 +59,15 @@ export default function App() {
                   <VehicleForm />
                 </AdminRoute>
               </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
             }
           />
         </Routes>

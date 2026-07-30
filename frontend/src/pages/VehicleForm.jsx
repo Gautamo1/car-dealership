@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createVehicle } from "../api/vehicle";
 import VehicleFormComponent from "../components/VehicleForm";
+import Alert from "../components/Alert";
+import { getErrorMessage } from "../utils/error";
 
 export default function VehicleForm() {
   const navigate = useNavigate();
@@ -14,6 +16,8 @@ export default function VehicleForm() {
     price: "",
     stock: "",
   });
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleChange(e) {
     setForm({
@@ -24,31 +28,52 @@ export default function VehicleForm() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
+    setIsSubmitting(true);
   
     const payload = {
       ...form,
       year: Number(form.year),
       price: Number(form.price),
-      stock: Number(form.stock),
+      stock: form.stock === "" ? 0 : Number(form.stock),
     };
-  
-    console.log(payload);
-  
-    await createVehicle(payload);
-  
-    navigate("/dashboard");
+
+    try {
+      await createVehicle(payload);
+
+      navigate("/dashboard", {
+        state: { successMessage: "Vehicle created successfully" },
+      });
+    } catch (error) {
+      setError(getErrorMessage(error, "Unable to create vehicle."));
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <div>
-      <h1>Add Vehicle</h1>
+    <div className="mx-auto w-full max-w-3xl px-4 py-8">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-slate-900">Add Vehicle</h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Add a new vehicle to the inventory.
+        </p>
+      </div>
 
-    <VehicleFormComponent
-      form={form}
-      onChange={handleChange}
-      onSubmit={handleSubmit}
-      buttonText="Save Vehicle"
-    />
+      {error ? (
+        <Alert type="error" className="mb-4">
+          {error}
+        </Alert>
+      ) : null}
+
+      <VehicleFormComponent
+        form={form}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        buttonText="Save Vehicle"
+        isSubmitting={isSubmitting}
+        submitLoadingText="Saving vehicle..."
+      />
     </div>
   );
 }
