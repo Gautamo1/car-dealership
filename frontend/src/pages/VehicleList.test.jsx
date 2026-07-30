@@ -154,3 +154,42 @@ describe("Vehicle Form", () => {
     ).toBeInTheDocument();
   });
 });
+
+test("deletes a vehicle", async () => {
+  mockGetVehicles.mockResolvedValue([
+    {
+      id: 1,
+      make: "Toyota",
+      model: "Camry",
+      year: 2024,
+      category: "Sedan",
+      price: 30000,
+    },
+  ]);
+
+  const mockDeleteVehicle = vi.fn().mockResolvedValue({});
+
+  vi.doMock("../api/vehicle", async () => {
+    const actual = await vi.importActual("../api/vehicle");
+    return {
+      ...actual,
+      deleteVehicle: (...args) => mockDeleteVehicle(...args),
+    };
+  });
+
+  const user = userEvent.setup();
+
+  render(
+    <MemoryRouter>
+      <VehicleList />
+    </MemoryRouter>
+  );
+
+  const deleteButton = await screen.findByRole("button", {
+    name: /delete/i,
+  });
+
+  await user.click(deleteButton);
+
+  expect(mockDeleteVehicle).toHaveBeenCalledWith(1);
+});
