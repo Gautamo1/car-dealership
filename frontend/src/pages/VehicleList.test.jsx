@@ -2,8 +2,46 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import VehicleList from "./VehicleList";
+import { MemoryRouter } from "react-router-dom";
 
 const mockGetVehicles = vi.fn();
+
+const mockNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+test("navigates to vehicle details when a vehicle is clicked", async () => {
+  mockGetVehicles.mockResolvedValue([
+    {
+      id: 1,
+      make: "Toyota",
+      model: "Camry",
+      year: 2024,
+      category: "Sedan",
+      price: 30000,
+    },
+  ]);
+
+  const user = userEvent.setup();
+
+  render(
+    <MemoryRouter>
+      <VehicleList />
+    </MemoryRouter>
+  );
+
+  const vehicle = await screen.findByText("Toyota");
+
+  await user.click(vehicle);
+
+  expect(mockNavigate).toHaveBeenCalledWith("/vehicles/1");
+});
 
 vi.mock("../api/vehicle", () => ({
   getVehicles: (...args) => mockGetVehicles(...args),
