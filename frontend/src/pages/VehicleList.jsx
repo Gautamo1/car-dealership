@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getVehicles } from "../api/vehicle";
+import VehicleCard from "../components/VehicleCard";
 
 export default function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
@@ -19,9 +20,10 @@ export default function VehicleList() {
 
       <ul>
         {vehicles.map((vehicle) => (
-          <li key={vehicle.id}>
-            {vehicle.make}
-          </li>
+            <VehicleCard
+            key={vehicle.id}
+            vehicle={vehicle}
+            />
         ))}
       </ul>
     </div>
